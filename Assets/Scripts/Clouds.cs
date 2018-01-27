@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CloudManager : MonoBehaviour {
+public class Clouds : MonoBehaviour {
 
 	public GameObject cloudPrefab;
 
@@ -45,7 +45,7 @@ public class CloudManager : MonoBehaviour {
 		objectPos.y += offsetFromMouse.y;
 		objectPos.z = 0.0f;   
 		GameObject cloudObject = Instantiate (cloudPrefab, objectPos, transform.rotation) as GameObject;
-		cloudObject.transform.parent = GameObject.Find ("CloudsManager").transform;
+		cloudObject.transform.parent = GameObject.Find ("Clouds").transform;
 	}
 
 }
