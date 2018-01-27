@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SolarPanelManager : MonoBehaviour {
 
-	public GameObject[] panels;
+	private GameObject[] panels;
 	public int totalEnergyProd;
 
 	public int optimalEnergy = 10;
@@ -22,7 +22,7 @@ public class SolarPanelManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		panels = GameObject.FindGameObjectsWithTag ("SolarPanel");
 	}
 	
 	// Update is called once per frame
