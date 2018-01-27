@@ -26,7 +26,7 @@ public class CloudManager : MonoBehaviour {
 				Vector3 objectPos = Camera.main.ScreenToWorldPoint (mousePos);
 				objectPos.z = 0.0f;   
 				GameObject cloudObject = Instantiate (cloudPrefab, objectPos, transform.rotation) as GameObject;
-				cloudObject.transform.parent = GameObject.Find ("Clouds").transform;
+				cloudObject.transform.parent = GameObject.Find ("CloudsManager").transform;
 				nextCloud = Time.time + cloudCoolDown;
 			}
 		}
