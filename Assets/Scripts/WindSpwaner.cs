@@ -9,7 +9,8 @@ public class WindSpwaner : MonoBehaviour {
 	 * Scale of 1 = default gridSize x gridSize
 	 */
 	public float gridScale=5f;
-	private int defaultGridSize = 10;
+	private int defaultGridSizeX = 15;
+	private int defaultGridSizeY = 11;
 	GameObject[,] windGrid;
 
 	// Use this for initialization
@@ -28,7 +29,7 @@ public class WindSpwaner : MonoBehaviour {
 	{
 		
 
-		int gridWidth = (int)(gridScale*defaultGridSize), gridHeight= (int)(gridScale*defaultGridSize);
+		int gridWidth = (int)(gridScale*defaultGridSizeX), gridHeight= (int)(gridScale*defaultGridSizeY);
 		this.windGrid = new GameObject[gridWidth, gridHeight];
 		Vector2 arrowSize = windPrefab.GetComponent<BoxCollider2D> ().size/gridScale;
 		Debug.Log (arrowSize.x + " " + arrowSize.y);

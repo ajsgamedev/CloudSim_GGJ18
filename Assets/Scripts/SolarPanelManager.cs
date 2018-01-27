@@ -16,7 +16,7 @@ public class SolarPanelManager : MonoBehaviour {
 	public Slider optimalSlider;
 	//public Slider pointsSlider;
 	public float nextCollect = 0.0f;
-	public float collectCoolDown = 1.0f;
+	public float collectCoolDown = 0.1f;
 	public Timer timer;
 	 
 
@@ -39,7 +39,7 @@ public class SolarPanelManager : MonoBehaviour {
 			float newGain = maxPointGainPerTimeslice + ((minPointsGain - maxPointGainPerTimeslice) / (maxDifference - minDifference)) * (diff - minDifference);
 
 				
-			pointsGained += (int)newGain;
+			pointsGained += (int)Mathf.Pow(newGain, 3);
 
 			nextCollect = Time.time + collectCoolDown;
 		}

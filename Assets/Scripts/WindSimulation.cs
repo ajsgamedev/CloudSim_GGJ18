@@ -11,7 +11,8 @@ public class WindSimulation : MonoBehaviour {
 	PressureCell[] pressureCells;
 
 
-	int gridSize;
+	int gridSizeX;
+	int gridSizeY;
 	int numberPressureCells = 9;
 
 	int warmUpSteps = 1;
@@ -52,11 +53,12 @@ public class WindSimulation : MonoBehaviour {
 	public void initializeWindGrid() {
 		windGrid = windSpawner.MakeWindSpawn ();
 
-		gridSize = windGrid.GetLength (0);
+		gridSizeX = windGrid.GetLength (0);
+		gridSizeY = windGrid.GetLength (1);
 
-		windCells = new WindCell[gridSize, gridSize];
-		for (int x = 0; x < gridSize; x++) {
-			for (int y = 0; y < gridSize; y++) {
+		windCells = new WindCell[gridSizeX, gridSizeY];
+		for (int x = 0; x < gridSizeX; x++) {
+			for (int y = 0; y < gridSizeY; y++) {
 				windCells [x, y] = new WindCell(
 					new Vector2(Random.Range (minInitDirection, maxInitDirection),Random.Range (minInitDirection, maxInitDirection)),
 					Random.Range (minPressure, maxPressure)
@@ -69,7 +71,7 @@ public class WindSimulation : MonoBehaviour {
 		pressureCells = new PressureCell[numberPressureCells];
 		for (int i = 0; i < numberPressureCells; i++) {
 			pressureCells[i] = new PressureCell(
-				new Vector2(Random.Range(0, gridSize-2), Random.Range(0, gridSize-2)),
+				new Vector2(Random.Range(0, gridSizeX-2), Random.Range(0, gridSizeY-2)),
 				new Vector2(
 					Random.Range(minSpeedPressureCell, maxSpeedPressureCell),
 					Random.Range(minSpeedPressureCell, maxSpeedPressureCell)
@@ -97,12 +99,12 @@ public class WindSimulation : MonoBehaviour {
 	}
 
 	void calculateWindCellInteraction() {
-		for (int x = 0; x < gridSize; x++) {
-			for (int y = 0; y < gridSize; y++) {
+		for (int x = 0; x < gridSizeX; x++) {
+			for (int y = 0; y < gridSizeY; y++) {
 				windCells[x,y] = Interchange (windCells [x,y], windCells [Mathf.Max(0,x-1),y], new Vector2 (-1, 0));
-				windCells[x,y] = Interchange (windCells [x,y], windCells [Mathf.Min(gridSize-1,x+1),y], new Vector2 (1, 0));
+				windCells[x,y] = Interchange (windCells [x,y], windCells [Mathf.Min(gridSizeX-1,x+1),y], new Vector2 (1, 0));
 				windCells[x,y] = Interchange (windCells [x,y], windCells [x,Mathf.Max(0, y-1)], new Vector2 (0, -1));
-				windCells[x,y] = Interchange (windCells [x,y], windCells [x,Mathf.Min(gridSize-1, y+1)], new Vector2 (0, 1));
+				windCells[x,y] = Interchange (windCells [x,y], windCells [x,Mathf.Min(gridSizeY-1, y+1)], new Vector2 (0, 1));
 				windGrid [x, y].GetComponent<WindForce> ().direction = windCells [x, y].direction;
 
 				float normalizedPressure = windCells [x, y].pressure + maxPressure / Mathf.Abs (minPressure - maxPressure);
@@ -125,9 +127,9 @@ public class WindSimulation : MonoBehaviour {
 			pressureCell.position += pressureCell.direction;
 			//pressureCell.position += windInfluenceOnPressureCell * windCells [nearestX, nearestY].direction;
 			pressureCell.position.x = Mathf.Max (0, pressureCell.position.x);
-			pressureCell.position.x = Mathf.Min (gridSize - 1, pressureCell.position.x);
+			pressureCell.position.x = Mathf.Min (gridSizeX - 1, pressureCell.position.x);
 			pressureCell.position.y = Mathf.Max (0, pressureCell.position.y);
-			pressureCell.position.y = Mathf.Min (gridSize - 1, pressureCell.position.y);
+			pressureCell.position.y = Mathf.Min (gridSizeY - 1, pressureCell.position.y);
 
 			pressureCell.direction += new Vector2 (
 				Random.Range (minPressureCellSpeedToAdd, maxPressureCellSpeedToAdd),
@@ -141,14 +143,14 @@ public class WindSimulation : MonoBehaviour {
 			if (pressureCell.position.x <= 0) {
 				pressureCell.direction.x += bounceForce;
 			}
-			if (pressureCell.position.x >= gridSize - 1) {
+			if (pressureCell.position.x >= gridSizeX - 1) {
 				pressureCell.direction.x -= bounceForce;
 			}
 			if (pressureCell.position.y <= 0) {
 				pressureCell.direction.y += bounceForce;
 			}
 
-			if (pressureCell.position.y >= gridSize - 1) {
+			if (pressureCell.position.y >= gridSizeY - 1) {
 				pressureCell.direction.y -= bounceForce;
 			}
 				

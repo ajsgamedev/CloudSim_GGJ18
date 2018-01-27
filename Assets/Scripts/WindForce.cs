@@ -5,7 +5,7 @@ using UnityEngine;
 public class WindForce : MonoBehaviour {
 
 	public Vector2 direction;
-	public int force;
+	public float force;
 	// Use this for initialization
 	void Start () 
 	{
