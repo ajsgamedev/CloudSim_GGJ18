@@ -11,7 +11,7 @@ public class WindSimulation : MonoBehaviour {
 	PressureCell[] pressureCells;
 
 
-	int gridSize = 20;
+	int gridSize;
 	int numberPressureCells = 9;
 
 	int warmUpSteps = 1;
@@ -50,6 +50,10 @@ public class WindSimulation : MonoBehaviour {
 	}
 
 	public void initializeWindGrid() {
+		windGrid = windSpawner.MakeWindSpawn ();
+
+		gridSize = windGrid.GetLength (0);
+
 		windCells = new WindCell[gridSize, gridSize];
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
@@ -59,7 +63,6 @@ public class WindSimulation : MonoBehaviour {
 				);
 			}
 		}
-		windGrid = windSpawner.MakeWindSpawn (gridSize);
 	}
 
 	void initializePressureCells() {
@@ -100,7 +103,6 @@ public class WindSimulation : MonoBehaviour {
 				windCells[x,y] = Interchange (windCells [x,y], windCells [Mathf.Min(gridSize-1,x+1),y], new Vector2 (1, 0));
 				windCells[x,y] = Interchange (windCells [x,y], windCells [x,Mathf.Max(0, y-1)], new Vector2 (0, -1));
 				windCells[x,y] = Interchange (windCells [x,y], windCells [x,Mathf.Min(gridSize-1, y+1)], new Vector2 (0, 1));
-					
 				windGrid [x, y].GetComponent<WindForce> ().direction = windCells [x, y].direction;
 
 				float normalizedPressure = windCells [x, y].pressure + maxPressure / Mathf.Abs (minPressure - maxPressure);

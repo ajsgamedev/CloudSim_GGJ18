@@ -17,7 +17,7 @@ public class CloudManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (GameObject.FindGameObjectsWithTag ("Cloud").Length < 10) {
+		if (GameObject.FindGameObjectsWithTag ("Cloud").Length < 10000) {
 
 
 			if (Input.GetMouseButtonDown (0) && Time.time > nextCloud) {

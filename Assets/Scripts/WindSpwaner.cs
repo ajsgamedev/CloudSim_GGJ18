@@ -8,8 +8,8 @@ public class WindSpwaner : MonoBehaviour {
 	/**
 	 * Scale of 1 = default gridSize x gridSize
 	 */
-	public float gridScale=1f;
-
+	public float gridScale=5f;
+	private int defaultGridSize = 10;
 	GameObject[,] windGrid;
 
 	// Use this for initialization
@@ -24,18 +24,17 @@ public class WindSpwaner : MonoBehaviour {
 	}
 
 
-	public GameObject[,] MakeWindSpawn(int gridSize)
+	public GameObject[,] MakeWindSpawn()
 	{
-		this.windGrid = new GameObject[gridSize, gridSize];
+		
 
-		float gridWidth = gridScale*gridSize, gridHeight= gridScale*gridSize;
-		Debug.Log (gridWidth);
-		Debug.Log (gridHeight);
+		int gridWidth = (int)(gridScale*defaultGridSize), gridHeight= (int)(gridScale*defaultGridSize);
+		this.windGrid = new GameObject[gridWidth, gridHeight];
 		Vector2 arrowSize = windPrefab.GetComponent<BoxCollider2D> ().size/gridScale;
 		Debug.Log (arrowSize.x + " " + arrowSize.y);
 
-		for (int i = 0; i < gridSize; i++) {
-			for (int j = 0; j < gridSize; j++) {
+		for (int i = 0; i < gridWidth; i++) {
+			for (int j = 0; j < gridHeight; j++) {
 				Vector2 newSpawnPos = new Vector2 (arrowSize.x * i, arrowSize.y*j);
 				GameObject wind = Instantiate (windPrefab, newSpawnPos, transform.rotation) as GameObject;
 				wind.transform.parent = GameObject.Find ("Winds").transform;
