@@ -22,13 +22,30 @@ public class CloudManager : MonoBehaviour {
 
 			if (Input.GetMouseButtonDown (0) && Time.time > nextCloud) {
 				nextCloud = Time.time + cloudCoolDown;
-				Vector3 mousePos = Input.mousePosition;
-				Vector3 objectPos = Camera.main.ScreenToWorldPoint (mousePos);
-				objectPos.z = 0.0f;   
-				GameObject cloudObject = Instantiate (cloudPrefab, objectPos, transform.rotation) as GameObject;
-				cloudObject.transform.parent = GameObject.Find ("CloudsManager").transform;
+				float cloudOffset = 0.2f;
+				float cloudOffsetNear = 0.16f;
+				createCloud (new Vector2 (0, 0));
+				createCloud (new Vector2 (cloudOffset, 0));
+				createCloud (new Vector2 (0, cloudOffset));
+				createCloud (new Vector2 (-cloudOffset, 0));
+				createCloud (new Vector2 (0, -cloudOffset));
+				createCloud (new Vector2 (cloudOffsetNear, cloudOffsetNear));
+				createCloud (new Vector2 (-cloudOffsetNear, -cloudOffsetNear));
+				createCloud (new Vector2 (-cloudOffsetNear, cloudOffsetNear));
+				createCloud (new Vector2 (cloudOffsetNear, -cloudOffsetNear));
 				nextCloud = Time.time + cloudCoolDown;
 			}
 		}
 	}
+
+	void createCloud(Vector2 offsetFromMouse) {
+		Vector3 mousePos = Input.mousePosition;
+		Vector3 objectPos = Camera.main.ScreenToWorldPoint (mousePos);
+		objectPos.x += offsetFromMouse.x;
+		objectPos.y += offsetFromMouse.y;
+		objectPos.z = 0.0f;   
+		GameObject cloudObject = Instantiate (cloudPrefab, objectPos, transform.rotation) as GameObject;
+		cloudObject.transform.parent = GameObject.Find ("CloudsManager").transform;
+	}
+
 }

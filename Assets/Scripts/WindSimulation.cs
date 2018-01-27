@@ -11,33 +11,36 @@ public class WindSimulation : MonoBehaviour {
 	PressureCell[] pressureCells;
 
 
-	int gridSize = 50;
-	int numberPressureCells = 10;
+	int gridSize = 20;
+	int numberPressureCells = 9;
 
-	int warmUpSteps = 200;
+	int warmUpSteps = 1;
 	float minInitDirection = -1f;
 	float maxInitDirection = 1f;
 
-	float minPressure = -20.0f;
-	float maxPressure = 20f;
+	float minPressure = -60.0f;
+	float maxPressure = 60f;
 
 	//bigger value means bigger impact of pressure differences on wind direction
-	float pressureImpact = 0.001f;
+	float pressureImpact = 0.004f;
 	//should be somewhere between 1 (no balancing) and 2 (balancing by taking average)
-	float pressureBalancingSpeed = 1.001f;
+	float pressureBalancingSpeed = 1.15f;
 	//should be somewhere between 1 (no balancing) and 2 (balancing by taking average)
 	float windBalancing = 1.005f;
-	float coriolisAngle = 6f;
+	float coriolisAngle = 12f;
+	float windInfluenceOnPressureCell = 2f;
 
-	float minSpeedPressureCell = 0.1f;
-	float maxSpeedPressureCell = 1f;
-	float minPressureCellSpeedToAdd = -0.001f;
-	float maxPressureCellSpeedToAdd = 0.001f;
+	float minSpeedPressureCell = -0.1f;
+	float maxSpeedPressureCell = 0.1f;
+	float minPressureCellSpeedToAdd = -0.01f;
+	float maxPressureCellSpeedToAdd = 0.01f;
 
-	float minPressureToAdd = -0.1f;
-	float maxPressureToAdd = 0.1f;
+	float minPressureToAdd = -14.1f;
+	float maxPressureToAdd = 14.1f;
 
+	float bounceForce = 1f;
 
+	float powerRegression = 1.001f;
 
 	// Use this for initialization
 	void Start () {
@@ -63,7 +66,7 @@ public class WindSimulation : MonoBehaviour {
 		pressureCells = new PressureCell[numberPressureCells];
 		for (int i = 0; i < numberPressureCells; i++) {
 			pressureCells[i] = new PressureCell(
-				new Vector2(Random.Range(0, gridSize-1), Random.Range(0, gridSize-1)),
+				new Vector2(Random.Range(0, gridSize-2), Random.Range(0, gridSize-2)),
 				new Vector2(
 					Random.Range(minSpeedPressureCell, maxSpeedPressureCell),
 					Random.Range(minSpeedPressureCell, maxSpeedPressureCell)
@@ -99,24 +102,30 @@ public class WindSimulation : MonoBehaviour {
 				windCells[x,y] = Interchange (windCells [x,y], windCells [x,Mathf.Min(gridSize-1, y+1)], new Vector2 (0, 1));
 					
 				windGrid [x, y].GetComponent<WindForce> ().direction = windCells [x, y].direction;
+
+				float normalizedPressure = windCells [x, y].pressure + maxPressure / Mathf.Abs (minPressure - maxPressure);
+				Color newColor = new Color (normalizedPressure, normalizedPressure, normalizedPressure);
+				windGrid [x, y].GetComponentInChildren<SpriteRenderer> ().color = newColor;
 			}
 		}
 	}
 
 	void calculatePressureCells() {
 		foreach(PressureCell pressureCell in pressureCells) {
-			int nearestX = (int)Mathf.Round (pressureCell.position.x) - 1;
-			int nearestY = (int)Mathf.Round (pressureCell.position.y) - 1;
+			int nearestX = (int)Mathf.Round (pressureCell.position.x);
+			int nearestY = (int)Mathf.Round (pressureCell.position.y);
 
 			windCells [nearestX, nearestY].pressure += pressureCell.pressureToAdd;
+			//windCells [nearestX, nearestY].pressure = maxPressure;
 			windCells [nearestX, nearestY].pressure = Mathf.Max (minPressure, windCells [nearestX, nearestY].pressure);
 			windCells [nearestX, nearestY].pressure = Mathf.Min (maxPressure, windCells [nearestX, nearestY].pressure);
 
 			pressureCell.position += pressureCell.direction;
+			//pressureCell.position += windInfluenceOnPressureCell * windCells [nearestX, nearestY].direction;
 			pressureCell.position.x = Mathf.Max (0, pressureCell.position.x);
-			pressureCell.position.x = Mathf.Min (gridSize, pressureCell.position.x);
+			pressureCell.position.x = Mathf.Min (gridSize - 1, pressureCell.position.x);
 			pressureCell.position.y = Mathf.Max (0, pressureCell.position.y);
-			pressureCell.position.y = Mathf.Min (gridSize, pressureCell.position.y);
+			pressureCell.position.y = Mathf.Min (gridSize - 1, pressureCell.position.y);
 
 			pressureCell.direction += new Vector2 (
 				Random.Range (minPressureCellSpeedToAdd, maxPressureCellSpeedToAdd),
@@ -126,6 +135,22 @@ public class WindSimulation : MonoBehaviour {
 			pressureCell.direction.x = Mathf.Min (maxSpeedPressureCell, pressureCell.direction.x);
 			pressureCell.direction.y = Mathf.Max (minSpeedPressureCell, pressureCell.direction.y);
 			pressureCell.direction.y = Mathf.Min (maxSpeedPressureCell, pressureCell.direction.y);
+
+			if (pressureCell.position.x <= 0) {
+				pressureCell.direction.x += bounceForce;
+			}
+			if (pressureCell.position.x >= gridSize - 1) {
+				pressureCell.direction.x -= bounceForce;
+			}
+			if (pressureCell.position.y <= 0) {
+				pressureCell.direction.y += bounceForce;
+			}
+
+			if (pressureCell.position.y >= gridSize - 1) {
+				pressureCell.direction.y -= bounceForce;
+			}
+				
+
 		}
 	}
 
@@ -170,8 +195,12 @@ public class WindSimulation : MonoBehaviour {
 	float adaptPressure(float pressure, float pressureNeighbor) {
 		
 		float averagePressure = (pressure + pressureNeighbor) / 2;
-		return (1 / this.pressureBalancingSpeed) * pressure +
+		averagePressure = (1 / this.pressureBalancingSpeed) * pressure +
 			((this.pressureBalancingSpeed -1) / this.pressureBalancingSpeed) * averagePressure;
+
+		averagePressure -= Mathf.Sign (averagePressure)
+			* Mathf.Pow(((maxPressure - Mathf.Abs (averagePressure)) / 10000), powerRegression);
+		return averagePressure;
 	}
 
 
