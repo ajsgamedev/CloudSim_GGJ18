@@ -21,7 +21,6 @@ public class Clouds : MonoBehaviour {
 
 
 			if (Input.GetMouseButtonDown (0) && Time.time > nextCloud) {
-				nextCloud = Time.time + cloudCoolDown;
 				float cloudOffset = 0.2f;
 				float cloudOffsetNear = 0.16f;
 				createCloud (new Vector2 (0, 0));

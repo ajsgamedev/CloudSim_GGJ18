@@ -15,8 +15,9 @@ public class SolarPanelManager : MonoBehaviour {
 
 	public Slider optimalSlider;
 	//public Slider pointsSlider;
-	public float nextCollect = 0.0f; // this is if you wish to allow projectile from                      //the beginning of the game it self.   
-	public float collectCoolDown = 1.0f; // if the cooldown is say 5 secs
+	public float nextCollect = 0.0f;
+	public float collectCoolDown = 1.0f;
+	public Timer timer;
 	 
 
 	// Use this for initialization
@@ -28,23 +29,27 @@ public class SolarPanelManager : MonoBehaviour {
 	void Update () {
 		calcTotalEnergy ();
 
-		if(Time.time > nextCollect)
+		if(Time.time > nextCollect && pointsGained < neededPointsGain)
 		{
 			float diff = Mathf.Abs (optimalEnergy - totalEnergyProd);
-			Debug.Log ("difference: "+diff);
 			float minDifference = 0f;
 			float maxDifference = optimalSlider.maxValue;
 			float minPointsGain = 1f;
 
 			float newGain = maxPointGainPerTimeslice + ((minPointsGain - maxPointGainPerTimeslice) / (maxDifference - minDifference)) * (diff - minDifference);
 
-			Debug.Log ("new Gain: "+newGain);
 				
 			pointsGained += (int)newGain;
 
 			nextCollect = Time.time + collectCoolDown;
 		}
-		
+		checkForEnd ();
+	}
+
+	void checkForEnd() {
+		if (pointsGained >= neededPointsGain) {
+			timer.stop = true;
+		}
 	}
 
 	void calcTotalEnergy()
