@@ -29,11 +29,13 @@ public class WindSpwaner : MonoBehaviour {
 		this.windGrid = new GameObject[gridSize, gridSize];
 
 		float gridWidth = gridScale*gridSize, gridHeight= gridScale*gridSize;
+		Debug.Log (gridWidth);
+		Debug.Log (gridHeight);
 		Vector2 arrowSize = windPrefab.GetComponent<BoxCollider2D> ().size/gridScale;
 		Debug.Log (arrowSize.x + " " + arrowSize.y);
 
-		for (int i = 0; i < gridWidth; i++) {
-			for (int j = 0; j < gridHeight; j++) {
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
 				Vector2 newSpawnPos = new Vector2 (arrowSize.x * i, arrowSize.y*j);
 				GameObject wind = Instantiate (windPrefab, newSpawnPos, transform.rotation) as GameObject;
 				wind.transform.parent = GameObject.Find ("Winds").transform;
