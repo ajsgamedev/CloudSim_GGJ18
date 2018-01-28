@@ -16,7 +16,7 @@ public class MainMenuManager : MonoBehaviour {
 	// references to Button GameObjects
 	public GameObject MenuDefaultButton;
 	public GameObject AboutDefaultButton;
-	//public GameObject QuitButton;
+	public GameObject QuitButton;
 
 	
 	// reference the titleText so we can change it dynamically
@@ -47,7 +47,7 @@ public class MainMenuManager : MonoBehaviour {
 			case RuntimePlatform.WindowsPlayer:
 			case RuntimePlatform.OSXPlayer:
 			case RuntimePlatform.LinuxPlayer:
-				//QuitButton.SetActive(true);
+				 QuitButton.SetActive(true);
 				break;
 
 			// platforms that should not have quit button
@@ -57,12 +57,12 @@ public class MainMenuManager : MonoBehaviour {
 			case RuntimePlatform.OSXEditor:
 			case RuntimePlatform.IPhonePlayer:
 			case RuntimePlatform.WebGLPlayer: 
-				//QuitButton.SetActive(false);
+				QuitButton.SetActive(false);
 				break;
 
 			// all other platforms default to no quit button
 			default:
-				//QuitButton.SetActive(false);
+				QuitButton.SetActive(false);
 				break;
 		}
 	}
