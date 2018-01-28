@@ -15,7 +15,7 @@ public class WindSimulation : MonoBehaviour {
 	int gridSizeY;
 	int numberPressureCells = 9;
 
-	int warmUpSteps = 1;
+	int warmUpSteps = 0;
 	float minInitDirection = -1f;
 	float maxInitDirection = 1f;
 

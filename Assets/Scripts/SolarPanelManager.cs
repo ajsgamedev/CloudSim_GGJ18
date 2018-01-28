@@ -19,11 +19,13 @@ public class SolarPanelManager : MonoBehaviour {
 	public float nextCollect = 0.0f;
 	public float collectCoolDown = 0.1f;
 	public Timer timer;
+	private AudioSource audioSource;
 	 
 
 	// Use this for initialization
 	void Start () {
 		panels = GameObject.FindGameObjectsWithTag ("SolarPanel");
+		audioSource = GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -41,6 +43,12 @@ public class SolarPanelManager : MonoBehaviour {
 
 				
 			pointsGained = (int) Mathf.Max(0,pointsGained + Mathf.Pow(newGain, 3));
+
+			if (newGain < -8 && !audioSource.isPlaying) {
+				audioSource.Play ();
+			} else if(newGain > 0) {
+				audioSource.Stop ();
+			}
 
 			nextCollect = Time.time + collectCoolDown;
 		}

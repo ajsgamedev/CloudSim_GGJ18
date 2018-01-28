@@ -8,10 +8,11 @@ public class Clouds : MonoBehaviour {
 
 	private float nextCloud = 0.0f; // this is if you wish to allow projectile from                      //the beginning of the game it self.   
 	public float cloudCoolDown = 2.0f; // if the cooldown is say 5 secs
+	private AudioSource audioSource;
 
 	// Use this for initialization
 	void Start () {
-		
+		audioSource = GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -21,6 +22,7 @@ public class Clouds : MonoBehaviour {
 
 
 			if (Input.GetMouseButtonDown (0) && Time.time > nextCloud) {
+				audioSource.Play ();
 				float cloudOffset = 0.2f;
 				float cloudOffsetNear = 0.16f;
 				createCloud (new Vector2 (0, 0));

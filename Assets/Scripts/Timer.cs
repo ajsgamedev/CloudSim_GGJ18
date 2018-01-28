@@ -9,11 +9,14 @@ public class Timer : MonoBehaviour {
 	private float startTime;
 	private Text text;
 	public bool stop = false;
+	private AudioSource audioSource;
+	private bool hasPlayedVictorySound = false;
 
 	// Use this for initialization
 	void Start () {
 		startTime = Time.time;
 		text = GetComponent<Text> ();
+		audioSource = GetComponent<AudioSource> ();
 	}
 	
 	// Update is called once per frame
@@ -21,6 +24,9 @@ public class Timer : MonoBehaviour {
 		if (!stop) {
 			seconds = (int)Mathf.Round (Time.time - startTime);
 			text.text = seconds.ToString ();
+		} else if(!hasPlayedVictorySound) {
+			audioSource.Play ();
+			hasPlayedVictorySound = true;
 		}
 	}
 
