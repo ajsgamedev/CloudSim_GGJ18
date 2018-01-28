@@ -6,7 +6,7 @@ public class Clouds : MonoBehaviour {
 
 	public GameObject cloudPrefab;
 
-	public float nextCloud = 0.0f; // this is if you wish to allow projectile from                      //the beginning of the game it self.   
+	private float nextCloud = 0.0f; // this is if you wish to allow projectile from                      //the beginning of the game it self.   
 	public float cloudCoolDown = 2.0f; // if the cooldown is say 5 secs
 
 	// Use this for initialization
@@ -32,6 +32,10 @@ public class Clouds : MonoBehaviour {
 				createCloud (new Vector2 (-cloudOffsetNear, -cloudOffsetNear));
 				createCloud (new Vector2 (-cloudOffsetNear, cloudOffsetNear));
 				createCloud (new Vector2 (cloudOffsetNear, -cloudOffsetNear));
+				createCloud (new Vector2 (cloudOffset*2, 0));
+				createCloud (new Vector2 (0, cloudOffset*2));
+				createCloud (new Vector2 (-cloudOffset*2, 0));
+				createCloud (new Vector2 (0, -cloudOffset*2));
 				nextCloud = Time.time + cloudCoolDown;
 			}
 		}

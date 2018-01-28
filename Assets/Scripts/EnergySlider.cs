@@ -9,6 +9,8 @@ public class EnergySlider : MonoBehaviour {
 	public GameObject energyManager;
 	SolarPanelManager eM;
 	Slider uiSlider;
+	float lastValue  = 0;
+
 	// Use this for initialization
 	void Start () {
 		//GameObject.FindGameObjectsWithTag ("SolarPanel").Length;
@@ -20,6 +22,7 @@ public class EnergySlider : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		uiSlider.value = eM.totalEnergyProd;
+		uiSlider.value = (eM.totalEnergyProd + lastValue * 3) / 4;
+		lastValue = uiSlider.value;
 	}
 }
